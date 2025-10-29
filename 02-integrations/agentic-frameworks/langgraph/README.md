@@ -135,7 +135,7 @@ status:
 Invoke your deployed agent:
 
 ```bash
-npx ppio-sandbox-cli@beta agent invoke "Hello, Agent!"
+npx ppio-sandbox-cli@beta agent invoke "Hello, Agent!" --env PPIO_AGENT_API_KEY="<your-api-key>"
 ```
 
 The CLI reads `agent_id` automatically from `.ppio-agent.yaml`.

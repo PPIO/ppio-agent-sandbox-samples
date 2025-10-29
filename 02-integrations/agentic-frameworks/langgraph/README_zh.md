@@ -135,7 +135,7 @@ status:
 调用已部署的 Agent：
 
 ```bash
-npx ppio-sandbox-cli@beta agent invoke "Hello, Agent!"
+npx ppio-sandbox-cli@beta agent invoke "Hello, Agent!" --env PPIO_AGENT_API_KEY="<your-api-key>"
 ```
 
 CLI 会自动从 `.ppio-agent.yaml` 读取 `agent_id`。
