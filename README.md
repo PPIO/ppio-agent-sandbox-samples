@@ -1,11 +1,11 @@
-# PPIO Agent Sandbox Samples
+# PPIO Agent Runtime Samples
 
-Welcome to the PPIO Agent Sandbox Samples repository! This collection provides tutorials and examples to help you get started with PPIO Agent Sandbox.
+Welcome to the PPIO Agent Sandbox Samples repository! This collection provides tutorials and examples to help you get started with PPIO Agent Runtime.
 
 ## 📚 Tutorials
 
 ### 01. Agent Runtime
-Learn how to work with PPIO Agent Runtime and migrate your AI Agent Apps from AWS AgentCore Runtime.
+Learn how to work with PPIO Agent Runtime and deploy your AI Agent Apps in minutes.
 
 - **[01-hosting-agent](./tutorials/01-agent-runtime/01-hosting-agent/)** - Learn how to host and run AI agents
 - **[02-hosting-MCP-server](./tutorials/01-agent-runtime/02-hosting-MCP-server/)** - Learn how to host MCP (Model Context Protocol) servers

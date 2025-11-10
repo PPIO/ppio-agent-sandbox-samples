@@ -1,0 +1,9 @@
+# PPIO Sandbox SDK
+ppio-sandbox>=1.1.0b1
+
+# Google Generative AI
+google-adk
+
+# 工具类
+python-dotenv>=1.0.0
+
