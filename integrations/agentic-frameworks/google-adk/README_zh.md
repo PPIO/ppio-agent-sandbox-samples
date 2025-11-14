@@ -1,8 +1,8 @@
-# PPIO Agent Runtime - LangGraph 示例
+# PPIO Agent Runtime - Google ADK 示例
 
-**使用 LangGraph 构建 AI Agent，并在几分钟内部署到 PPIO Agent Runtime。**
+**使用 Google Agent Development Kit 构建 AI Agent，并在几分钟内部署到 PPIO Agent Runtime。**
 
-这个示例向你展示如何将一个包含流式响应、多轮对话和工具集成的 AI Agent 快速部署到 PPIO Agent Runtime。
+这个示例展示如何将一个由 Google Gemini 驱动、集成原生 Google 搜索的 AI Agent 快速部署到 PPIO Agent Runtime。
 
 [English](README.md) | 简体中文
 
@@ -14,7 +14,7 @@
   - [本地运行](#本地运行)
   - [部署到 PPIO Agent Runtime](#部署到-ppio-agent-runtime)
 - [项目结构](#-项目结构)
-- [Agent 能力](#-Agent能力)
+- [Agent 能力](#-agent-能力)
 - [测试](#-测试)
 - [API 参考](#-api-参考)
 - [常见问题](#-常见问题)
@@ -24,10 +24,10 @@
 
 这个 Agent 示例包含了以下能力：
 
-- ✅ **流式响应** - 实时输出 token，提升用户体验
-- ✅ **多轮对话** - 自动管理对话历史
-- ✅ **工具集成** - DuckDuckGo 搜索功能
-- ✅ **完整测试** - 本地和生产环境测试
+- ✅ **Google Gemini 模型** - 由 Google 最新的 Gemini 模型驱动
+- ✅ **原生 Google 搜索** - 内置 Google 搜索工具集成
+- ✅ **会话管理** - 内存会话服务用于保持上下文
+- ✅ **简单高效** - 最小化配置，强大功能
 
 ## 🚀 快速开始
 
@@ -36,6 +36,7 @@
 开始之前，请安装以下环境：
 
 - **Python 3.9+** 和 **Node.js 20+**
+- **Google AI API 密钥** - [从 Google AI Studio 获取](https://aistudio.google.com/app/apikey)
 - **PPIO API 密钥** - [在控制台获取](https://ppio.com/settings/key-management)
 
 ### 本地运行
@@ -44,7 +45,7 @@
 
 ```bash
 git clone git@github.com:PPIO/agent-runtime-example.git
-cd agent-runtime-example
+cd agent-runtime-example/integrations/agentic-frameworks/google-adk
 ```
 
 **2. 创建 Python 虚拟环境**
@@ -77,7 +78,9 @@ cp .env.example .env
 
 | 变量 | 说明 | 必需 | 获取位置 |
 |------|------|------|----------|
-| `PPIO_API_KEY` | PPIO API 密钥 | ✅ 是 | [PPIO 控制台 → 密钥管理](https://ppio.com/settings/key-management) |
+| `GOOGLE_API_KEY` | Google AI API 密钥 | ✅ 是 | [Google AI Studio → API 密钥](https://aistudio.google.com/app/apikey) |
+| `GEMINI_MODEL` | Gemini 模型名称 | 否 | 默认：`gemini-2.5-flash` |
+| `PPIO_API_KEY` | PPIO API 密钥（用于部署） | 仅部署时 | [PPIO 控制台 → 密钥管理](https://ppio.com/settings/key-management) |
 | `PPIO_AGENT_ID` | 部署后的 Agent ID | 仅 CLI 测试时 | 部署后从 `.ppio-agent.yaml` 获取 |
 
 **5. 在本地启动 Agent**
@@ -92,7 +95,7 @@ Agent 运行在 `http://localhost:8080`。测试一下：
 bash tests/test_local_basic.sh
 ```
 
-你应该看到 Agent 返回的 JSON 响应。
+你应该看到由 Google Gemini 驱动的带有搜索功能的响应。
 
 ### 部署到 PPIO Agent Runtime
 
@@ -134,10 +137,10 @@ status:
 
 **4. 使用 CLI 测试**
 
-调用已部署的 Agent：
+调用已部署的 Agent（将 Google API 密钥作为环境变量传递）：
 
 ```bash
-npx ppio-sandbox-cli agent invoke "Hello, Agent!" --env PPIO_API_KEY="<your-api-key>"
+npx ppio-sandbox-cli agent invoke "告诉我关于 Google Gemini 的信息" --env GOOGLE_API_KEY="<your-google-api-key>"
 ```
 
 CLI 会自动从 `.ppio-agent.yaml` 读取 `agent_id`。
@@ -153,30 +156,18 @@ PPIO_AGENT_ID=agent-xxxx  # 从 .ppio-agent.yaml 的 status.agent_id 复制
 测试 SDK 调用：
 
 ```bash
-# 非流式响应测试
 python tests/test_sandbox_basic.py
-
-# 流式响应测试
-python tests/test_sandbox_streaming.py
-
-# 多轮对话测试
-python tests/test_sandbox_multi_turn.py
 ```
 
 ## 📁 项目结构
 
 ```
-ppio-agent-example/
-├── app.py                          # Agent 程序
-├── tests/                          # 所有测试文件
-│   ├── test_local_basic.sh         # 本地基础测试
-│   ├── test_local_streaming.sh     # 本地流式响应测试
-│   ├── test_local_multi_turn.sh    # 本地多轮对话测试
-│   ├── test_sandbox_basic.py       # 远程基础测试
-│   ├── test_sandbox_streaming.py   # 远程流式测试
-│   └── test_sandbox_multi_turn.py  # 远程多轮测试
-├── app_logs/                       # 应用程序日志（运行时生成）
-├── .env.example                    # 环境变量模板
+google-adk/
+├── app.py                       # Agent 程序
+├── tests/                       # 所有测试文件
+│   ├── test_local_basic.sh      # 本地基础测试
+│   └── test_sandbox_basic.py    # 远程基础测试
+├── .env.example                 # 环境变量模板
 ├── .gitignore
 ├── requirements.txt
 ├── pyproject.toml
@@ -187,37 +178,34 @@ ppio-agent-example/
 
 ## 🏗️ Agent 能力
 
-这个示例 Agent 具有三个主要功能：
+这个示例 Agent 展示了 Google ADK 的核心功能：
 
-### 💬 多轮对话
+### 🤖 Google Gemini 模型
 
-Agent 自动记住对话历史。每个沙箱实例维护自己的对话上下文。
+Agent 使用 Google 的 Gemini 模型（默认：`gemini-2.0-flash`），提供：
+- 快速高效的响应
+- 高级推理能力
+- 大型上下文窗口
+- 多模态理解（适用时）
 
-**对话示例：**
+你可以通过在 `.env` 文件中设置 `GEMINI_MODEL` 来更改模型。
+
+### 🔍 原生 Google 搜索集成
+
+Agent 通过 `google_search` 工具内置了 Google 搜索能力。当用户提出需要最新信息的问题时，Agent 会自动：
+1. 在 Google 上搜索相关信息
+2. 处理搜索结果
+3. 综合生成全面的回答
+
+**示例：**
 ```
-第 1 轮：
-用户："我叫 Alice"
-Agent："很高兴认识你，Alice！"
-
-第 2 轮（同一会话）：
-用户："我叫什么名字？"
-Agent："你的名字是 Alice。"
+用户："Google Gemini 2.5 的最新功能有哪些？"
+Agent：[搜索 Google 并提供最新信息]
 ```
 
-使用 SDK 时，传入相同的 `runtimeSessionId` 参数可以维持同一会话。
+### 💾 会话管理
 
-### 🌐 互联网搜索能力
-
-Agent 可以在需要时搜索 DuckDuckGo 获取最新信息。
-
-LangGraph 工作流自动处理：
-1. Agent 判断是否需要信息
-2. Agent 调用搜索工具
-3. Agent 将搜索结果整合到回答中
-
-### 📡 流式和非流式响应
-
-每次请求可通过 `streaming` 参数选择是否返回流式数据。
+Agent 使用内存会话服务在同一沙箱实例内维护对话上下文。会话通过请求上下文中的 `session_id` 进行标识。
 
 ## 🧪 测试
 
@@ -234,14 +222,7 @@ python app.py
 **在另一个终端运行测试：**
 
 ```bash
-# 基础测试
 bash tests/test_local_basic.sh
-
-# 流式响应测试
-bash tests/test_local_streaming.sh
-
-# 多轮对话测试
-bash tests/test_local_multi_turn.sh
 ```
 
 > **Windows 用户：** 使用 Git Bash 或 WSL 运行 bash 脚本。
@@ -253,21 +234,15 @@ bash tests/test_local_multi_turn.sh
 **前置条件：**
 - 已用 `agent launch` 命令部署 Agent
 - 已在 `.env` 文件中添加 `PPIO_AGENT_ID`
+- 环境中可用 `GOOGLE_API_KEY`
 
 **运行测试：**
 
 ```bash
-# 非流式响应
 python tests/test_sandbox_basic.py
-
-# 流式响应
-python tests/test_sandbox_streaming.py
-
-# 多轮对话
-python tests/test_sandbox_multi_turn.py
 ```
 
-如果 Agent 配置正确，所有测试都应通过。
+如果 Agent 配置正确，测试应该通过。
 
 ## 🔌 API 参考
 
@@ -283,7 +258,8 @@ GET /ping
 ```json
 {
   "status": "healthy",
-  "service": "My Agent"
+  "service": "Google ADK Agent",
+  "features": ["google_search"]
 }
 ```
 
@@ -300,66 +276,39 @@ POST /invocations
 | 参数 | 类型 | 必需 | 默认值 | 说明 |
 |------|------|------|--------|------|
 | `prompt` | 字符串 | ✅ 是 | - | 用户消息或问题 |
-| `streaming` | 布尔值 | 否 | `false` | 启用流式输出 |
+| `user_id` | 字符串 | 否 | `"user1234"` | 用户标识符 |
 
 **请求示例：**
 ```json
 {
-  "prompt": "告诉我关于 AI 智能体的信息",
-  "streaming": false
+  "prompt": "AI 领域的最新进展有哪些？",
+  "user_id": "user123"
 }
 ```
 
-**非流式响应：**
+**响应：**
 ```json
 {
-  "result": "AI 智能体是能够自主..."
+  "result": "根据最新信息，AI 领域的最新进展包括..."
 }
 ```
-
-**流式响应：**
-
-服务器发送事件（SSE）格式：
-
-```
-data: {"chunk": "AI ", "type": "content"}
-data: {"chunk": "智能体 ", "type": "content"}
-data: {"chunk": "是 ", "type": "content"}
-...
-data: {"chunk": "", "type": "end"}
-```
-
-每行 `data:` 包含一个带有下一个 token 的 JSON 对象。
 
 ## 🔧 常见问题
 
-### Agent 不记得之前的消息
+### 出现"Session not found"或"app name"错误
 
-**原因：** 每次沙箱重启会创建新的对话历史。
+**原因：** 会话服务配置问题。
 
-**解决方法：** 在 SDK 调用中使用相同的 `runtimeSessionId` 参数来维持同一沙箱实例：
+**解决方法：** Agent 会自动回退到直接调用 Gemini API。这是正常行为，Agent 仍然可以正常工作。
 
-```python
-response = await client.invoke_agent_runtime(
-    agentId=agent_id,
-    payload=payload,
-    runtimeSessionId="unique-session-id",  # 多轮对话使用相同 ID
-    timeout=300
-)
-```
+### Google 搜索没有返回结果
 
-### 流式输出不工作
+**原因：** Google Search API 配额限制或连接问题。
 
-**原因：** 可能缺少 `streaming` 参数或设置为 `false`。
-
-**解决方法：** 确保请求中包含 `"streaming": true`：
-
-```json
-{
-  "prompt": "你的问题",
-  "streaming": true
-}
-```
+**解决方法：** 
+1. 检查 Google AI API 密钥是否有效
+2. 验证是否有足够的 API 配额
+3. 检查网络连接
 
 ### 本地运行时出现导入错误
 
@@ -368,13 +317,20 @@ response = await client.invoke_agent_runtime(
 **解决方法：** 
 1. 激活虚拟环境
 2. 安装依赖：`pip install -r requirements.txt`
-3. 验证安装：`pip list | grep ppio-sandbox`
+3. 验证安装：`pip list | grep google-adk`
+
+### Agent 响应很慢
+
+**原因：** Google 搜索查询可能需要时间，具体取决于网络条件。
+
+**解决方法：** 这是 Agent 需要搜索时的预期行为。对于简单查询，Agent 会直接响应而不搜索，速度会更快。
 
 ## 📚 资源链接
 
 - [PPIO Agent Runtime 文档](https://ppio.com/docs/sandbox/agent-runtime-introduction)
 - [PPIO Agent 沙箱文档](https://ppio.com/docs/sandbox/overview)
-- [LangGraph 文档](https://docs.langchain.com/oss/python/langgraph/overview)
+- [Google Agent Development Kit](https://docs.cloud.google.com/agent-builder/agent-development-kit/overview)
+- [Google AI Studio](https://aistudio.google.com/)
 
 ## 📄 许可证
 

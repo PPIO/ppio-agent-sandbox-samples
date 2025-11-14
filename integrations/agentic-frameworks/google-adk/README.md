@@ -1,118 +1,342 @@
-# Google ADK Agent 示例项目
+# PPIO Agent Runtime - Google ADK Example
 
-这个示例展示如何使用 Google Agent Development Kit (ADK) 和 Gemini 模型构建 Agent，并集成到 PPIO Agent Runtime 中。
+**Build AI agents with Google Agent Development Kit and deploy to PPIO Agent Runtime in minutes.**
 
-## 功能特性
+This example demonstrates how to deploy a Google Gemini-powered AI agent with native Google Search integration to PPIO Agent Runtime.
 
-- ✅ 使用 Google Gemini 模型
-- ✅ 支持会话管理（带降级方案）
-- ✅ 支持 Google Search 工具
-- ✅ 完整集成 PPIO Agent Runtime
-- ✅ 自动降级到直接 API 调用
+[简体中文](README_zh.md) | English
 
-## 支持的模型
+## 📋 Table of Contents
 
-- `gemini-2.0-flash-exp` - 最新的 Gemini Flash 模型（推荐）
-- `gemini-1.5-pro` - Gemini Pro 模型
-- `gemini-1.5-flash` - Gemini Flash 模型
+- [What This Example Includes](#-what-this-example-includes)
+- [Quick Start](#-quick-start)
+  - [What You Need](#what-you-need)
+  - [Run Locally](#run-locally)
+  - [Deploy to PPIO Agent Runtime](#deploy-to-ppio-agent-runtime)
+- [Project Structure](#-project-structure)
+- [Agent Capabilities](#-agent-capabilities)
+- [Testing](#-testing)
+- [API Reference](#-api-reference)
+- [Troubleshooting](#-troubleshooting)
+- [Resources](#-resources)
 
-## 快速开始
+## ✨ What This Example Includes
 
-### 1. 获取 Google API Key
+This agent example includes the following capabilities:
 
-访问 [Google AI Studio](https://makersuite.google.com/app/apikey) 获取 API Key。
+- ✅ **Google Gemini models** - Powered by Google's latest Gemini models
+- ✅ **Native Google Search** - Built-in Google Search tool integration
+- ✅ **Session management** - In-memory session service for context retention
+- ✅ **Simple and efficient** - Minimal setup with powerful capabilities
 
-### 2. 安装依赖
+## 🚀 Quick Start
+
+### What You Need
+
+Before starting, install these requirements:
+
+- **Python 3.9+** and **Node.js 20+**
+- **Google AI API Key** - [Get it from Google AI Studio](https://aistudio.google.com/app/apikey)
+- **PPIO API Key** - [Get it from console](https://ppio.com/settings/key-management)
+
+### Run Locally
+
+**1. Clone the repository**
+
+```bash
+git clone git@github.com:PPIO/agent-runtime-example.git
+cd agent-runtime-example/integrations/agentic-frameworks/google-adk
+```
+
+**2. Create a Python virtual environment**
+
+```bash
+python -m venv .venv
+
+# macOS/Linux:
+source .venv/bin/activate
+
+# Windows:
+.venv\Scripts\activate
+```
+
+**3. Install Python dependencies**
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 3. 配置环境变量
+**4. Add your API keys to `.env`**
 
-创建 `.env` 文件：
+Copy the example file and add your keys:
 
 ```bash
-GOOGLE_API_KEY=your-google-api-key
-GEMINI_MODEL=gemini-2.0-flash-exp
+cp .env.example .env
 ```
 
-### 4. 本地测试
+Edit `.env` with these required values:
+
+| Variable | Description | Required | Where to Find It |
+|----------|-------------|----------|------------------|
+| `GOOGLE_API_KEY` | Your Google AI API key | ✅ Yes | [Google AI Studio → API Keys](https://aistudio.google.com/app/apikey) |
+| `GEMINI_MODEL` | Gemini model name | No | Default: `gemini-2.5-flash` |
+| `PPIO_API_KEY` | Your PPIO API key (for deployment) | Only for deployment | [PPIO Dashboard → Key Management](https://ppio.com/settings/key-management) |
+| `PPIO_AGENT_ID` | Agent ID after deployment | Only for CLI invocation | From `.ppio-agent.yaml` after deployment |
+
+**5. Start the agent locally**
 
 ```bash
 python app.py
 ```
 
-测试示例：
+The agent runs at `http://localhost:8080`. Test it:
 
 ```bash
-# 基本对话
-curl -X POST http://localhost:8080/invocations \
-  -H "Content-Type: application/json" \
-  -d '{"prompt": "你好！请介绍一下 Google Gemini"}'
-
-# 查询天气
-curl -X POST http://localhost:8080/invocations \
-  -H "Content-Type: application/json" \
-  -d '{"prompt": "北京今天天气怎么样？"}'
-
-# 搜索信息
-curl -X POST http://localhost:8080/invocations \
-  -H "Content-Type: application/json" \
-  -d '{"prompt": "搜索一下量子计算的应用"}'
+bash tests/test_local_basic.sh
 ```
 
-### 5. 部署到 PPIO
+You should see responses powered by Google Gemini with search capabilities.
+
+### Deploy to PPIO Agent Runtime
+
+**1. Install PPIO sandbox CLI (beta) locally**
+
+```bash
+npm install ppio-sandbox-cli@beta
+
+npx ppio-sandbox-cli --version
+```
+
+**2. Configure your agent**
+
+Run the interactive configuration (first deployment only):
 
 ```bash
 npx ppio-sandbox-cli agent configure
-npx ppio-sandbox-cli agent launch
-npx ppio-sandbox-cli agent invoke "介绍一下 Google Gemini 模型"
 ```
 
-## 会话管理
+The CLI creates three files:
+- `.ppio-agent.yaml` - Agent metadata and configuration
+- `ppio.Dockerfile` - Sandbox template Dockerfile
+- `.dockerignore` - Files to exclude from Docker build
 
-Google ADK 支持会话管理，可以保持多轮对话的上下文：
+**3. Deploy to PPIO cloud**
 
-```python
-# 在请求中传递 session_id
+```bash
+npx ppio-sandbox-cli agent launch
+```
+
+After deployment succeeds, `.ppio-agent.yaml` contains your agent ID:
+
+```yaml
+status:
+  phase: deployed
+  agent_id: agent-xxxx  # ⭐ You need this ID to invoke the agent
+  last_deployed: '2025-10-23T10:35:00Z'
+```
+
+**4. Test with CLI**
+
+Invoke your deployed agent (pass Google API key as environment variable):
+
+```bash
+npx ppio-sandbox-cli agent invoke "Tell me about Google Gemini" --env GOOGLE_API_KEY="<your-google-api-key>"
+```
+
+The CLI reads `agent_id` automatically from `.ppio-agent.yaml`.
+
+**5. Invoke the agent from your application with SDK**
+
+Save the Agent ID from `.ppio-agent.yaml` to `.env` file:
+
+```bash
+PPIO_AGENT_ID=agent-xxxx  # Copy from .ppio-agent.yaml status.agent_id
+```
+
+Test SDK invocation:
+
+```bash
+python tests/test_sandbox_basic.py
+```
+
+## 📁 Project Structure
+
+```
+google-adk/
+├── app.py                       # Agent program
+├── tests/                       # All test files
+│   ├── test_local_basic.sh      # Local basic test
+│   └── test_sandbox_basic.py    # Remote basic test
+├── .env.example                 # Environment variable template
+├── .gitignore
+├── requirements.txt
+├── pyproject.toml
+├── README.md
+├── README_zh.md
+└── LICENSE
+```
+
+## 🏗️ Agent Capabilities
+
+This example agent showcases Google ADK's core features:
+
+### 🤖 Google Gemini Models
+
+The agent uses Google's Gemini models (default: `gemini-2.0-flash`), providing:
+- Fast and efficient responses
+- Advanced reasoning capabilities
+- Large context windows
+- Multimodal understanding (when applicable)
+
+You can change the model by setting `GEMINI_MODEL` in your `.env` file.
+
+### 🔍 Native Google Search Integration
+
+The agent has built-in Google Search capability through the `google_search` tool. When users ask questions that require current information, the agent automatically:
+1. Searches Google for relevant information
+2. Processes the search results
+3. Synthesizes a comprehensive answer
+
+**Example:**
+```
+User: "What are the latest features of Google Gemini 2.5?"
+Agent: [Searches Google and provides up-to-date information]
+```
+
+### 💾 Session Management
+
+The agent uses in-memory session service to maintain conversation context within the same sandbox instance. Sessions are identified by `session_id` from the request context.
+
+## 🧪 Testing
+
+### Local testing (development)
+
+Local tests run against `app.py` on `localhost:8080`.
+
+**Start the agent:**
+
+```bash
+python app.py
+```
+
+**Run tests in another terminal:**
+
+```bash
+bash tests/test_local_basic.sh
+```
+
+> **Windows users:** Use Git Bash or WSL to run bash scripts.
+
+### Production testing (PPIO sandbox)
+
+Production tests invoke the deployed agent using the SDK.
+
+**Requirements:**
+- Agent deployed with `agent launch` command
+- `PPIO_AGENT_ID` added to `.env` file
+- `GOOGLE_API_KEY` available in environment
+
+**Run tests:**
+
+```bash
+python tests/test_sandbox_basic.py
+```
+
+The test should pass if the agent is configured correctly.
+
+## 🔌 API Reference
+
+### Health check endpoint
+
+Check if the agent is running properly:
+
+```bash
+GET /ping
+```
+
+**Response:**
+```json
 {
-    "prompt": "继续上次的话题",
-    "user_id": "user123",
-    "session_id": "session-456"
+  "status": "healthy",
+  "service": "Google ADK Agent",
+  "features": ["google_search"]
 }
 ```
 
-## 自定义配置
+### Agent invocation endpoint
 
-### 更改模型
-
-在 `.env` 中设置：
+Send a request to the agent:
 
 ```bash
-GEMINI_MODEL=gemini-1.5-pro  # 使用 Pro 模型
+POST /invocations
 ```
 
-### 自定义系统指令
+**Request body parameters:**
 
-在代码中修改：
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `prompt` | string | ✅ Yes | - | User message or question |
+| `user_id` | string | No | `"user1234"` | User identifier |
 
-```python
-model = GenerativeModel(
-    model_name="gemini-2.0-flash-exp",
-    system_instruction="你的自定义系统指令"
-)
+**Example request:**
+```json
+{
+  "prompt": "What are the latest AI developments?",
+  "user_id": "user123"
+}
 ```
 
-## 注意事项
+**Response:**
+```json
+{
+  "result": "Based on recent information, here are the latest AI developments..."
+}
+```
 
-1. **API 配额**：Google AI Studio 提供免费配额，请注意使用限制
-2. **模型选择**：Flash 模型速度更快，Pro 模型能力更强
-3. **会话管理**：建议为每个用户对话使用唯一的 session_id
+## 🔧 Troubleshooting
 
-## 相关资源
+### "Session not found" or "app name" errors
 
-- [Google AI Studio](https://makersuite.google.com/)
-- [Google Generative AI 文档](https://ai.google.dev/docs)
-- [PPIO Agent Runtime 文档](https://docs.ppio.cloud/sandbox/agent-runtime-introduction)
+**Cause:** Session service configuration issues.
+
+**Solution:** The agent automatically falls back to direct Gemini API calls. This is normal behavior and the agent will still function correctly.
+
+### Google Search not returning results
+
+**Cause:** Google Search API quota limits or connectivity issues.
+
+**Solution:** 
+1. Check your Google AI API key is valid
+2. Verify you have sufficient API quota
+3. Check network connectivity
+
+### Import errors when running locally
+
+**Cause:** Dependencies not installed or wrong Python environment.
+
+**Solution:** 
+1. Activate your virtual environment
+2. Install dependencies: `pip install -r requirements.txt`
+3. Verify installation: `pip list | grep google-adk`
+
+### Agent responses are slow
+
+**Cause:** Google Search queries can take time depending on network conditions.
+
+**Solution:** This is expected behavior when the agent needs to search. For faster responses on simple queries, the agent will respond directly without searching.
+
+## 📚 Resources
+
+- [PPIO Agent Runtime Documentation](https://ppio.com/docs/sandbox/agent-runtime-introduction)
+- [PPIO Agent Sandbox Documentation](https://ppio.com/docs/sandbox/overview)
+- [Google Agent Development Kit](https://docs.cloud.google.com/agent-builder/agent-development-kit/overview)
+- [Google AI Studio](https://aistudio.google.com/)
+
+## 📄 License
+
+MIT License - see [LICENSE](LICENSE) file for details.
+
+---
+
+**Need help?** Open an issue or contact support at [ppio.com](https://ppio.com)
 

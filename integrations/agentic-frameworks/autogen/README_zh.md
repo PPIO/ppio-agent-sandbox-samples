@@ -1,8 +1,8 @@
-# PPIO Agent Runtime - LangGraph 示例
+# PPIO Agent Runtime - AutoGen 示例
 
-**使用 LangGraph 构建 AI Agent，并在几分钟内部署到 PPIO Agent Runtime。**
+**使用 Microsoft AutoGen 构建多智能体系统，并在几分钟内部署到 PPIO Agent Runtime。**
 
-这个示例向你展示如何将一个包含流式响应、多轮对话和工具集成的 AI Agent 快速部署到 PPIO Agent Runtime。
+这个示例展示如何使用 Microsoft AutoGen 框架将一个包含流式响应、多轮对话和多工具集成的 AI Agent 快速部署到 PPIO Agent Runtime。
 
 [English](README.md) | 简体中文
 
@@ -14,7 +14,7 @@
   - [本地运行](#本地运行)
   - [部署到 PPIO Agent Runtime](#部署到-ppio-agent-runtime)
 - [项目结构](#-项目结构)
-- [Agent 能力](#-Agent能力)
+- [Agent 能力](#-agent-能力)
 - [测试](#-测试)
 - [API 参考](#-api-参考)
 - [常见问题](#-常见问题)
@@ -26,7 +26,8 @@
 
 - ✅ **流式响应** - 实时输出 token，提升用户体验
 - ✅ **多轮对话** - 自动管理对话历史
-- ✅ **工具集成** - DuckDuckGo 搜索功能
+- ✅ **多工具集成** - 天气查询、信息搜索和数学计算工具
+- ✅ **工具反思** - AutoGen 内置的工具使用反思能力
 - ✅ **完整测试** - 本地和生产环境测试
 
 ## 🚀 快速开始
@@ -44,7 +45,7 @@
 
 ```bash
 git clone git@github.com:PPIO/agent-runtime-example.git
-cd agent-runtime-example
+cd agent-runtime-example/integrations/agentic-frameworks/autogen
 ```
 
 **2. 创建 Python 虚拟环境**
@@ -77,8 +78,11 @@ cp .env.example .env
 
 | 变量 | 说明 | 必需 | 获取位置 |
 |------|------|------|----------|
-| `PPIO_API_KEY` | PPIO API 密钥 | ✅ 是 | [PPIO 控制台 → 密钥管理](https://ppio.com/settings/key-management) |
-| `PPIO_AGENT_ID` | 部署后的 Agent ID | 仅 CLI 测试时 | 部署后从 `.ppio-agent.yaml` 获取 |
+| `OPENAI_API_KEY` | 用于 LLM 访问的 PPIO API 密钥 | ✅ 是 | [PPIO 控制台 → 密钥管理](https://ppio.com/settings/key-management) |
+| `OPENAI_BASE_URL` | 兼容 OpenAI 的 API 端点 | 否 | 默认：`https://api.ppinfra.com/v3/openai` |
+| `MODEL_NAME` | 使用的模型名称 | 否 | 默认：`deepseek/deepseek-v3.1-terminus` |
+| `PPIO_API_KEY` | PPIO API 密钥（用于部署） | 部署时 | 与 `OPENAI_API_KEY` 相同 |
+| `PPIO_AGENT_ID` | 部署后的 Agent ID | CLI 测试时 | 部署后从 `.ppio-agent.yaml` 获取 |
 
 **5. 在本地启动 Agent**
 
@@ -166,7 +170,7 @@ python tests/test_sandbox_multi_turn.py
 ## 📁 项目结构
 
 ```
-ppio-agent-example/
+autogen/
 ├── app.py                          # Agent 程序
 ├── tests/                          # 所有测试文件
 │   ├── test_local_basic.sh         # 本地基础测试
@@ -175,7 +179,6 @@ ppio-agent-example/
 │   ├── test_sandbox_basic.py       # 远程基础测试
 │   ├── test_sandbox_streaming.py   # 远程流式测试
 │   └── test_sandbox_multi_turn.py  # 远程多轮测试
-├── app_logs/                       # 应用程序日志（运行时生成）
 ├── .env.example                    # 环境变量模板
 ├── .gitignore
 ├── requirements.txt
@@ -206,14 +209,15 @@ Agent："你的名字是 Alice。"
 
 使用 SDK 时，传入相同的 `runtimeSessionId` 参数可以维持同一会话。
 
-### 🌐 互联网搜索能力
+### 🛠️ 多工具能力
 
-Agent 可以在需要时搜索 DuckDuckGo 获取最新信息。
+Agent 可以访问三个工具：
 
-LangGraph 工作流自动处理：
-1. Agent 判断是否需要信息
-2. Agent 调用搜索工具
-3. Agent 将搜索结果整合到回答中
+1. **get_weather** - 查询中国城市的天气信息
+2. **search_information** - 搜索一般信息（演示实现）
+3. **calculate** - 执行数学计算
+
+AutoGen 的**工具反思**功能使 Agent 能够评估工具使用情况并改进响应。
 
 ### 📡 流式和非流式响应
 
@@ -283,7 +287,8 @@ GET /ping
 ```json
 {
   "status": "healthy",
-  "service": "My Agent"
+  "service": "AutoGen Agent",
+  "features": ["weather", "search", "calculate", "streaming", "multi-turn"]
 }
 ```
 
@@ -305,7 +310,7 @@ POST /invocations
 **请求示例：**
 ```json
 {
-  "prompt": "告诉我关于 AI 智能体的信息",
+  "prompt": "北京的天气怎么样？",
   "streaming": false
 }
 ```
@@ -313,7 +318,7 @@ POST /invocations
 **非流式响应：**
 ```json
 {
-  "result": "AI 智能体是能够自主..."
+  "result": "北京目前晴天，温度 15°C..."
 }
 ```
 
@@ -322,9 +327,9 @@ POST /invocations
 服务器发送事件（SSE）格式：
 
 ```
-data: {"chunk": "AI ", "type": "content"}
-data: {"chunk": "智能体 ", "type": "content"}
-data: {"chunk": "是 ", "type": "content"}
+data: {"chunk": "北京 ", "type": "content"}
+data: {"chunk": "目前 ", "type": "content"}
+data: {"chunk": "晴天 ", "type": "content"}
 ...
 data: {"chunk": "", "type": "end"}
 ```
@@ -368,13 +373,19 @@ response = await client.invoke_agent_runtime(
 **解决方法：** 
 1. 激活虚拟环境
 2. 安装依赖：`pip install -r requirements.txt`
-3. 验证安装：`pip list | grep ppio-sandbox`
+3. 验证安装：`pip list | grep autogen`
+
+### 工具反思功能未按预期工作
+
+**原因：** AutoGen 的反思功能需要特定的模型能力。
+
+**解决方法：** 确保使用支持函数调用且具有足够推理能力的模型。检查 `app.py` 中的 `reflect_on_tool_use` 参数。
 
 ## 📚 资源链接
 
 - [PPIO Agent Runtime 文档](https://ppio.com/docs/sandbox/agent-runtime-introduction)
 - [PPIO Agent 沙箱文档](https://ppio.com/docs/sandbox/overview)
-- [LangGraph 文档](https://docs.langchain.com/oss/python/langgraph/overview)
+- [Microsoft AutoGen 文档](https://microsoft.github.io/autogen/stable/)
 
 ## 📄 许可证
 

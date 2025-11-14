@@ -75,9 +75,10 @@ cp .env.example .env
 
 Edit `.env` with these required values:
 
-| Variable | Description | Where to Find It |
-|----------|-------------|------------------|
-| `PPIO_API_KEY` | Your PPIO platform API key | [PPIO Dashboard → Key Management](https://ppio.ai/settings/key-management) |
+| Variable | Description | Required | Where to Find It |
+|----------|-------------|----------|------------------|
+| `PPIO_API_KEY` | Your PPIO API key | ✅ Yes | [PPIO Dashboard → Key Management](https://ppio.com/settings/key-management) |
+| `PPIO_AGENT_ID` | Agent ID after deployment | Only for CLI invocation | From `.ppio-agent.yaml` after deployment |
 
 **5. Start the agent locally**
 
@@ -373,6 +374,7 @@ response = await client.invoke_agent_runtime(
 
 - [PPIO Agent Runtime Documentation](https://ppio.com/docs/sandbox/agent-runtime-introduction)
 - [PPIO Agent Sandbox Documentation](https://ppio.com/docs/sandbox/overview)
+- [LangGraph Documentation](https://docs.langchain.com/oss/python/langgraph/overview)
 
 ## 📄 License
 
@@ -380,4 +382,4 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ---
 
-**Need help?** Open an issue or contact support at [ppio.ai](https://ppio.ai)
+**Need help?** Open an issue or contact support at [ppio.com](https://ppio.com)
