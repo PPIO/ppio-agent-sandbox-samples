@@ -1,146 +1,84 @@
 <div align="center">
-  <h1>PPIO Agent Runtime Sample Projects</h1>
-  
-  <h2>Build and Deploy AI Agents with Any Framework and Model</h2>
+  <h1>PPIO Agent Sandbox Samples</h1>
   
   <p>
-    <a href="#-quick-start">Quick Start</a>
-    <a href="https://ppio.com/docs/sandbox/agent-runtime-introduction">Documentation</a>
-    <a href="#-sample-projects">Sample Projects</a>
+    <a href="https://ppio.com/docs/sandbox/overview">📚 Documentation</a> •
+    <a href="#-about-ppio-agent-sandbox">Introduction</a> •
+    <a href="#-project-structure">Project Structure</a>
+  </p>
+  
+  <p>
+    <a href="README.md">English</a> | <a href="README_zh.md">简体中文</a>
   </p>
 </div>
 
 ---
 
-Welcome to the PPIO Agent Runtime sample projects repository!
+Welcome to the **PPIO Agent Sandbox Samples** repository!
 
-**PPIO Agent Runtime** is a framework-agnostic, model-agnostic lightweight AI agent runtime framework that enables you to deploy and run AI agents safely and quickly. Whether you're using [LangGraph](https://www.langchain.com/langgraph), [Microsoft AutoGen](https://www.microsoft.com/en-us/research/project/autogen/), [Google ADK](https://docs.cloud.google.com/agent-builder/agent-development-kit/overview), or [OpenAI Agents SDK](https://openai.github.io/openai-agents-python/), PPIO Agent Runtime provides the infrastructure support you need. By eliminating the heavy lifting of building and managing agent infrastructure, PPIO Agent Runtime allows you to use your favorite frameworks and models, deploying with just a few lines of code and commands.
-
-This repository provides samples and tutorials to help you quickly understand and integrate PPIO Agent Runtime capabilities into your applications.
+This repository provides usage examples for the PPIO Agent Sandbox product, helping you quickly understand and integrate PPIO Agent Sandbox capabilities into your applications.
 
 > [!IMPORTANT]
-> The samples provided in this repository are for experimental and educational purposes only. They demonstrate concepts and techniques but are not intended for direct production use.
+> The examples provided in this repository are for experimental and educational purposes only. They demonstrate concepts and techniques but are not suitable for direct production use.
 
-## 📁 Repository Structure
+## 📖 About PPIO Agent Sandbox
 
-### 🔌 [`integrations/agentic-frameworks/`](./integrations/agentic-frameworks/)
-**AI Agent Framework Integrations**
+**Agent Sandbox** is a next-generation runtime infrastructure designed specifically for AI Agent scenarios, providing a secure and isolated cloud sandbox environment to execute AI-generated code. This sandbox environment prevents AI Agents from accessing or tampering with resources outside the system, ensuring their behavior does not harm the system.
 
-Demonstrates how to integrate PPIO Agent Runtime with popular AI agent frameworks. Each framework sample includes complete implementation and detailed documentation.
+### Product Features
 
-**[LangGraph](./integrations/agentic-frameworks/langgraph/)**
-**[AutoGen](./integrations/agentic-frameworks/autogen/)**
-**[Google ADK](./integrations/agentic-frameworks/google-adk/)**
-**[OpenAI Agents SDK](./integrations/agentic-frameworks/openai-agents-sdk/)**
+* **Security Isolation**. Sandboxes have system-level isolation capabilities to ensure the security of data and execution environment within the sandbox.
+* **Fast Startup**. Startup time is less than 200ms with support for large-scale concurrent creation, suitable for AI application scenarios with high concurrency requirements.
+* **Multi-language Execution Environment**. Supports running code in multiple programming languages such as Python, JavaScript, C++, meeting diverse AI task requirements.
+* **Fast Pause and Resume**. Can pause the sandbox at any time and resume it when needed later, with file system and process state also being restored.
+* **Background Execution**. Supports background task execution, suitable for scenarios that need to wait for results.
+* **Easy Integration**. Seamlessly integrates with mainstream AI Agent frameworks and tools, supporting closed-loop code generation and execution.
 
-Each sample includes:
-- ✅ Complete agent implementation code
-- ✅ Local development, testing, and deployment guide (in `README.md` file)
-- ✅ Complete test suite (local and sandbox environments, in `tests` directory)
+### Use Cases
 
-## 🚀 Quick Start
+* AI data analysis, processing, and visualization
+* Code execution environment for Code Agents
+* Cloud virtual desktop environment for Computer Use Agents
 
-### Prerequisites
+> For more information, please visit the [Official Documentation](https://ppio.com/docs/sandbox/overview)
 
-Before you begin, make sure you have:
+## 📁 Project Structure
 
-- **Python 3.9+** and **Node.js 20+**
-- **PPIO API Key** - [Get it from console](https://ppio.com/settings/key-management)
+### 🚀 [`agent-runtime/`](./agent-runtime/)
+**PPIO Agent Runtime Sample Projects**
 
-### Step 1: Choose a Framework Sample
+PPIO Agent Runtime is a framework-agnostic and model-agnostic lightweight AI Agent runtime framework that allows you to safely and quickly deploy and run AI Agents.
 
-Select an AI agent framework you're familiar with to get started:
+This directory contains integration examples for multiple mainstream AI Agent frameworks:
 
-```bash
-# Clone the repository
-git clone git@github.com:PPIO/ppio-agent-sandbox-samples.git
-cd ppio-agent-sandbox-samples
+- **[LangGraph](./agent-runtime/integrations/agentic-frameworks/langgraph/)**
+- **[AutoGen](./agent-runtime/integrations/agentic-frameworks/autogen/)**
+- **[Google ADK](./agent-runtime/integrations/agentic-frameworks/google-adk/)**
+- **[OpenAI Agents SDK](./agent-runtime/integrations/agentic-frameworks/openai-agents-sdk/)**
 
-# Navigate to your chosen framework directory
-cd integrations/agentic-frameworks/langgraph  # or autogen, google-adk, openai-agents-sdk
-```
+## 📚 Related Resources
 
-### Step 2: Install Dependencies and Configure
-
-```bash
-# Create Python virtual environment
-python -m venv .venv
-source .venv/bin/activate  # macOS/Linux
-# .venv\Scripts\activate    # Windows
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Configure environment variables
-cp .env.example .env
-# Edit .env file and add your API keys
-```
-
-### Step 3: Local Testing
-
-```bash
-# Start the agent
-python app.py
-
-# Test in another terminal
-bash tests/test_local_basic.sh
-```
-
-Success! You should see responses from your agent.
-
-### Step 4: Deploy to PPIO Agent Runtime
-
-```bash
-# Install PPIO CLI
-npm install ppio-sandbox-cli@beta
-
-# Configure and deploy (automatically creates all required resources)
-npx ppio-sandbox-cli agent configure
-npx ppio-sandbox-cli agent launch
-
-# Test deployed agent, different projects may require different --env parameters
-npx ppio-sandbox-cli agent invoke "Hello, Agent!" --env PPIO_API_KEY="<your-api-key>"
-```
-
-Congratulations! Your agent is now running on PPIO Agent Runtime!
-
-Check the detailed README documentation in each framework directory for more information.
-
-## 💡 Features
-
-### 🔄 Framework Agnostic
-Use any AI agent framework - LangGraph, AutoGen, Google ADK, OpenAI Agents SDK, or others. Deploy directly without code modifications.
-
-### 🤖 Model Agnostic
-Support any LLM - OpenAI, Anthropic, Google Gemini, DeepSeek, or other compatible models. Choose the model that best fits your needs.
-
-### ⚡ Rapid Deployment
-One-click deployment with PPIO CLI. Automatically creates all required resources, from local development to production in minutes.
-
-### 🔒 Secure and Reliable
-Enterprise-grade security with sandboxed isolated runtime environment ensuring safe agent execution.
-
-### 📊 Complete Testing
-Each sample includes a complete test suite covering basic functionality, streaming responses, and multi-turn conversations.
-
-### 📖 Comprehensive Documentation
-Bilingual documentation in Chinese and English, including detailed usage instructions, API references, and troubleshooting guides.
-
-## 🔗 Related Resources
-
-- [PPIO Agent Runtime Documentation](https://ppio.com/docs/sandbox/agent-runtime-introduction)
 - [PPIO Agent Sandbox Documentation](https://ppio.com/docs/sandbox/overview)
+- [PPIO Agent Runtime Documentation](https://ppio.com/docs/sandbox/agent-runtime-introduction)
 
 ## 🤝 Contributing
 
-We welcome contributions! If you'd like to contribute code or improve the samples:
+We welcome contributions! If you want to contribute code or improve examples:
 
-- Add new framework samples
-- Improve existing samples
+- Add new framework examples or use cases
+- Improve existing examples
 - Report issues
 - Suggest improvements
 
 Please submit an Issue or Pull Request.
+
+## 📄 License
+
+Please refer to the LICENSE files in each sample project.
+
 ---
 
+<div align="center">
+  Made with ❤️ by PPIO Team
+</div>
 
