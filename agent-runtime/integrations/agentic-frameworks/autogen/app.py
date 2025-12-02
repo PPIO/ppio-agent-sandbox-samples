@@ -205,8 +205,11 @@ async def _handle_non_streaming():
         for msg in conversation_history:
             messages.append(TextMessage(content=msg["content"], source=msg["role"]))
         
+        # 创建 CancellationToken
+        cancellation_token = CancellationToken()
+
         # 运行 Agent
-        response_message = await agent.on_messages(messages)
+        response_message = await agent.on_messages(messages, cancellation_token)
         
         # 提取响应内容
         if response_message and hasattr(response_message, 'chat_message'):

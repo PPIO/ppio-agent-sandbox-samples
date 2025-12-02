@@ -3,7 +3,7 @@ name = "autogen-agent-example"
 version = "1.0.0"
 description = "Microsoft AutoGen 多 Agent 对话框架集成 PPIO Agent Runtime 示例项目"
 authors = [
-    {name = "PPIO", email = "support@ppio.cloud"}
+    {name = "saiki", email = "saiki@ppio.com"}
 ]
 readme = "README.md"
 requires-python = ">=3.10"

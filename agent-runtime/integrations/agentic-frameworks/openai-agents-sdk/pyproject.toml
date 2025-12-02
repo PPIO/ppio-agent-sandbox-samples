@@ -3,7 +3,7 @@ name = "openai-agents-example"
 version = "1.0.0"
 description = "OpenAI Agents SDK 集成 PPIO Agent Runtime 示例项目"
 authors = [
-    {name = "PPIO", email = "support@ppio.cloud"}
+    {name = "PPIO", email = "saiki@ppio.com"}
 ]
 readme = "README.md"
 requires-python = ">=3.9"
