@@ -1,0 +1,46 @@
+{
+  "policies": {
+    "DisableFirstRunPage": true,
+    "OverrideFirstRunPage": "",
+    "OverridePostUpdatePage": "",
+    "SearchEngines": {
+      "Default": "百度",
+      "PreventInstalls": false,
+      "Add": [
+        {
+          "Name": "百度",
+          "URLTemplate": "https://www.baidu.com/s?wd={searchTerms}",
+          "Method": "GET",
+          "IconURL": "https://www.baidu.com/favicon.ico",
+          "Alias": "baidu",
+          "Description": "百度搜索",
+          "SuggestURLTemplate": "https://suggestion.baidu.com/su?wd={searchTerms}&action=opensearch"
+        }
+      ]
+    },
+    "FirefoxHome": {
+      "Search": true,
+      "TopSites": false,
+      "SponsoredTopSites": false,
+      "Highlights": false,
+      "Pocket": false,
+      "SponsoredPocket": false,
+      "Snippets": false,
+      "Locked": true
+    },
+    "Preferences": {
+      "dom.event.clipboardevents.enabled": {
+        "Value": true,
+        "Status": "locked"
+      },
+      "middlemouse.paste": {
+        "Value": true,
+        "Status": "locked"
+      },
+      "clipboard.autocopy": {
+        "Value": true,
+        "Status": "locked"
+      }
+    }
+  }
+}

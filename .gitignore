@@ -47,9 +47,12 @@ node_modules/
 # Poetry
 poetry.lock
 
-app_logs
-.dockerignore
-.ppio-agent.yaml
-Dockerfile
-ppio.Dockerfile
-ppio.toml
+agent-runtime/**/app_logs
+agent-runtime/**/.dockerignore
+agent-runtime/**/.ppio-agent.yaml
+agent-runtime/**/Dockerfile
+agent-runtime/**/ppio.Dockerfile
+agent-runtime/**/ppio.toml
+
+reverse-proxy
+*.zip

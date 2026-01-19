@@ -1,0 +1,18 @@
+# This is a config for PPIO Sandbox template
+# You can use template ID (m3b8bus6balxmxlijrwb) or template name (desktop-v2-beta) to create a sandbox:
+
+# Python SDK
+# from ppio_sandbox.core import Sandbox, AsyncSandbox
+# sandbox = Sandbox("desktop-v2-beta") # Sync sandbox
+# sandbox = await AsyncSandbox.create("desktop-v2-beta") # Async sandbox
+
+# JS SDK
+# import { Sandbox } from 'ppio-sandbox'
+# const sandbox = await Sandbox.create('desktop-v2-beta')
+
+team_id = "33307e33-14b8-4b3f-a464-5b48271df6b1"
+memory_mb = 8_192
+cpu_count = 8
+dockerfile = "ppio.Dockerfile"
+template_name = "desktop-v2-beta"
+template_id = "m3b8bus6balxmxlijrwb"
