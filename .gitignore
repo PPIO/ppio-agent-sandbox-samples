@@ -54,5 +54,7 @@ agent-runtime/**/Dockerfile
 agent-runtime/**/ppio.Dockerfile
 agent-runtime/**/ppio.toml
 
-reverse-proxy
-*.zip
+sandbox-templates/**/reverse-proxy
+sandbox-templates/**/*.zip
+sandbox-templates/**/ppio.toml
+
